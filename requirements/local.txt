@@ -1,0 +1,15 @@
+django==4.0.5
+djangorestframework==3.14.0
+django-cors-headers==3.14.0
+django-jazzmin==2.6.0
+djangorestframework-simplejwt==5.2.2
+django-filter==23.1
+django-simple-history==3.3.0
+channels==4.0.0
+daphne==4.0.0
+channels_redis==4.1.0
+requests==2.31.0
+pillow==10.0.1
+Faker==19.11.0
+djangorestframework-simplejwt==5.2.2
+#mysqlclient==2.1.1
