@@ -30,6 +30,6 @@ class RegisterUserSerializer(UserSerializer):
             User.objects.get(username=value)
         except User.DoesNotExist:
             return value        
-        raise serializers.ValidationError({'username': 'This user already exists'})
+        raise serializers.ValidationError({'username': 'Ya existe un usuario con ese email'})
         
     

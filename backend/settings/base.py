@@ -48,7 +48,9 @@ INSTALLED_APPS = [
     'simple_history',
     'apps.core',
     'apps.authentication',
-    'apps.user'
+    'apps.user',
+    'apps.condigitales',
+    'apps.shared'
 ]
 
 MIDDLEWARE = [

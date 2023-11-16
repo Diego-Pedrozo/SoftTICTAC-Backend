@@ -5,4 +5,4 @@ from rest_framework import serializers
 class InformationUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserInformationModel
-        fields = ['identification']
+        fields = ['identification', 'user_type']

@@ -15,11 +15,11 @@ class UserInformationModel(models.Model):
                               verbose_name=_('Número de identificación'), 
                               help_text=_('Ingresa número de identificación'), 
                               null=False, 
-                              unique=True)
+                              unique=True,
+                              error_messages={'unique': 'Ya existe un usuario con este número de identificación.'})
     
     user_type = models.CharField(   max_length= 255,
                                     choices=UserRanges.choices,
-                                    default=UserRanges.CLIENT,
                                     verbose_name=_('Tipo de usuario'),
                                     help_text='Seleccione un tipo de usuario',
                                     blank=False,
