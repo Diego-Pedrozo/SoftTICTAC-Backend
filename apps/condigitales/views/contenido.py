@@ -57,30 +57,40 @@ class ContenidoDigitalViewSet(ModelViewSet):
         instance = self.get_object()
         user = self.request.user
         user_information = UserInformationModel.objects.get(user=user)
-        mutable_data = request.data.copy()
-        contenido_data = request.data
+        mutable_data = request.data
+        contenido_serializer = ContenidoDigitalSerializer(data=mutable_data)
 
         if user_information.user_type not in ['2', '3']:
             return Response({'mensaje': 'No tiene permisos para cambiar el estado de este contenido.'}, status=status.HTTP_403_FORBIDDEN)
 
         if instance.estado == 'Pendiente' and user_information.user_type in ['2']:
             if request.data.get('estado') == 'Aprobado' and 'fecha_aprobacion' not in request.data:
-                #request.data['fecha_aprobacion'] = datetime.now()
-                instance.fecha_creacion.set(datetime.now)
-            
-            return super().partial_update(request, *args, **kwargs)
+                instance.fecha_aprobacion = datetime.now()
+                instance.save()
+                return super().partial_update(request, *args, **kwargs)
+            elif request.data.get('estado') == 'Rechazado':
+                return super().partial_update(request, *args, **kwargs)
+            else:
+                return Response({'mensaje': 'No puede editar en este momento1'})
                 
         elif instance.estado in ['Rechazado', 'Aprobado'] and user_information.user_type in ['2', '3']:
-            # request.data['estado'] = 'Pendiente'
-            # request.data['fecha_aprobacion'] = None
-            instance.estado.set('Pendiente')
-            instance.fecha_aprobacion.set(None)
-            poblacion_ids = [poblacion['id'] for poblacion in json.loads(mutable_data.get('id_poblacion'))]
-            instance.id_poblacion.set(poblacion_ids)
-
-            return super().partial_update(request, *args, **kwargs)
-            
-    
+            if request.data.get('estado') in ['Rechazado', 'Aprobado'] and user_information.user_type in ['2']:
+                # instance.estado = 'Pendiente'
+                # instance.fecha_aprobacion = None
+                # instance.save()
+                return Response({'mensaje': 'No puede editar en este momento2'}, status=status.HTTP_200_OK)
+            elif request.data.get('estado') not in ['Pendiente']:
+                instance.estado = 'Pendiente'
+                instance.fecha_aprobacion = None
+                poblacion_ids = [poblacion['id'] for poblacion in json.loads(mutable_data.get('id_poblacion'))]
+                instance.id_poblacion.set(poblacion_ids)
+                instance.save()
+                return super().partial_update(request, *args, **kwargs)
+            else:
+                return Response({'mensaje': 'No puede editar en este momento3'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'mensaje': 'No puede editar en este momento4'}, status=status.HTTP_200_OK)
+                   
     def list(self, request, *args, **kwargs):
         print(self.action)
         user = request.user
