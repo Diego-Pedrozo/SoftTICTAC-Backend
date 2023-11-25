@@ -48,7 +48,7 @@ class ContenidoDigitalViewSet(ModelViewSet):
 
             else:
                 #contenido.delete()
-                return Response({'mensaje': 'Error al crear el contenido'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'mensaje': 'Error al crear el contenido', 'error': contenido_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({'message': {str(e)}}, status=status.HTTP_400_BAD_REQUEST) 
     

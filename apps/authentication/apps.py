@@ -6,5 +6,6 @@ class AuthenticationConfig(AppConfig):
 
     def ready(self):
         import apps.authentication.signals
+        import apps.shared.signals
 
     
