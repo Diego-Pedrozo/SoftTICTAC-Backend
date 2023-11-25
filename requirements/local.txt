@@ -1,4 +1,4 @@
-django==4.0.5
+django==3.2.23
 djangorestframework==3.14.0
 django-cors-headers==3.14.0
 django-jazzmin==2.6.0
@@ -9,7 +9,7 @@ channels==4.0.0
 daphne==4.0.0
 channels_redis==4.1.0
 requests==2.31.0
-pillow==10.0.1
-Faker==19.11.0
+pillow==9.5.0
+Faker==18.13.0
 djangorestframework-simplejwt==5.2.2
 #mysqlclient==2.1.1
