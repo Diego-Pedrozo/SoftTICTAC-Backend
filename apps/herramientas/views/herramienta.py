@@ -100,25 +100,39 @@ class HerramientaViewSet(ModelViewSet):
             tema.delete()
             return Response({'message': {str(e)}}, status=status.HTTP_400_BAD_REQUEST)
 
-    # def partial_update(self, request, *args, **kwargs):
-    #     print(self.action)
-    #     instance = self.get_object()
-    #     user = self.request.user
-    #     user_information = UserInformationModel.objects.get(user=user)
+    def partial_update(self, request, *args, **kwargs):
+        print(self.action)
+        instance = self.get_object()
+        user = self.request.user
+        user_information = UserInformationModel.objects.get(user=user)
+        mutable_data = request.data
+        contenido_serializer = HerramientaSerializer(data=mutable_data)
 
-    #     if user_information.user_type not in ['2', '3']:
-    #         return Response({'mensaje': 'No tiene permisos para cambiar el estado de este contenido.'}, status=status.HTTP_403_FORBIDDEN)
+        if user_information.user_type not in ['2', '3']:
+            return Response({'mensaje': 'No tiene permisos para cambiar el estado de esta herramienta.'}, status=status.HTTP_403_FORBIDDEN)
 
-    #     if instance.estado == 'Pendiente' and user_information.user_type in ['2']:
-    #         if request.data.get('estado') == 'Aprobado' and 'fecha_aprobacion' not in request.data:
-    #             request.data['fecha_aprobacion'] = datetime.now()
-            
-    #         return super().partial_update(request, *args, **kwargs)
+        if instance.estado == 'Pendiente' and user_information.user_type in ['2']:
+            if request.data.get('estado') == 'Aprobado' and 'fecha_aprobacion' not in request.data:
+                instance.fecha_aprobacion = datetime.now()
+                instance.save()
+                return super().partial_update(request, *args, **kwargs)
+            elif request.data.get('estado') == 'Rechazado':
+                return super().partial_update(request, *args, **kwargs)
+            else:
+                return Response({'mensaje': 'No puede editar en este momento1'})
                 
-    #     elif instance.estado in ['Rechazado', 'Aprobado'] and user_information.user_type in ['2', '3']:
-    #         request.data['estado'] = 'Pendiente'
-    #         request.data['fecha_aprobacion'] = None
-    #         return super().partial_update(request, *args, **kwargs)
+        elif instance.estado in ['Rechazado', 'Aprobado'] and user_information.user_type in ['2', '3']:
+            if request.data.get('estado') in ['Rechazado', 'Aprobado'] and user_information.user_type in ['2']:
+                return Response({'mensaje': 'No puede editar en este momento2'}, status=status.HTTP_200_OK)
+            elif request.data.get('estado') not in ['Pendiente']:
+                instance.estado = 'Pendiente'
+                instance.fecha_aprobacion = None
+                instance.save()
+                return super().partial_update(request, *args, **kwargs)
+            else:
+                return Response({'mensaje': 'No puede editar en este momento3'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'mensaje': 'No puede editar en este momento4'}, status=status.HTTP_200_OK)
             
     
     def list(self, request, *args, **kwargs):
@@ -137,7 +151,7 @@ class HerramientaViewSet(ModelViewSet):
             queryset = HerramientaModel.objects.filter(estado="Aprobado")
 
         else:
-            queryset = ""
+            queryset = []
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)

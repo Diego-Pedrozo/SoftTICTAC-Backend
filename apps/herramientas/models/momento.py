@@ -5,7 +5,8 @@ from apps.herramientas.models.herramienta import HerramientaModel
 class MomentoModel(models.Model):
     
     id_herramienta = models.ForeignKey(HerramientaModel, verbose_name=_('Id herramienta'), 
-                                       help_text=_('Id herramienta'), on_delete=models.CASCADE)
+                                       help_text=_('Id herramienta'), on_delete=models.CASCADE,
+                                       related_name='momentos')
     
     nombre = models.CharField(max_length=30, verbose_name=_('Nombre del momento'),
                               help_text=_('Asigne un nombre al momento'), null=False)

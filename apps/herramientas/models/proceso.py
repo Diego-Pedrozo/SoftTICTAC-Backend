@@ -5,7 +5,8 @@ from apps.herramientas.models.recurso import RecursoModel
 
 class ProcesoModel(models.Model):
     id_momento = models.ForeignKey(MomentoModel, verbose_name=_('Id momento'), 
-                                   help_text=_('Id momento'), on_delete=models.CASCADE)
+                                   help_text=_('Id momento'), on_delete=models.CASCADE,
+                                   related_name='procesos')
     
     nombre = models.CharField(max_length=30, verbose_name=_('Nombre del proceso'),
                               help_text=_('Asigne un nombre al proceso'), null=False)

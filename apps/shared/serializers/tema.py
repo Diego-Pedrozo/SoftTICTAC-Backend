@@ -4,6 +4,7 @@ from apps.shared.serializers.competencia import CompetenciaSerializer
 
 class TemaSerializer(serializers.ModelSerializer):
     id_competencia = CompetenciaSerializer(many=True, read_only=True)
+    
     class Meta:
         model = TemaModel
         fields = ['id', 'nombre', 'id_linea', 'id_competencia']
