@@ -8,7 +8,7 @@ class ContenidoDigitalModel(models.Model):
     user = models.ForeignKey(User, verbose_name=_('Usuario'), 
                                 help_text=_('Seleccione Usuario'), on_delete=models.CASCADE,)
 
-    url = models.CharField(max_length=50, verbose_name=_('Url contenido'),
+    url = models.CharField(max_length=500, verbose_name=_('Url contenido'),
                               help_text=_('Ingresa la url del contenido'), blank=True, null=True)
     
     archivo = models.FileField(verbose_name=('Archivo'),upload_to='contenidos/',  max_length=100, 
