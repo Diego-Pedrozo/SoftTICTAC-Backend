@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'apps.authentication',
     'apps.user',
     'apps.condigitales',
+    'apps.herramientas',
     'apps.shared'
 ]
 

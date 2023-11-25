@@ -2,7 +2,7 @@ from rest_framework.viewsets import ModelViewSet
 from apps.condigitales.models.contenido import ContenidoDigitalModel
 from apps.condigitales.serializers.contenido import ContenidoDigitalSerializer
 from rest_framework.permissions import IsAuthenticated
-
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -10,14 +10,14 @@ from django.contrib.auth.models import User
 from apps.user.models.information import UserInformationModel
 from rest_framework.response import Response
 from datetime import date, datetime
-
+import json
 class ContenidoDigitalViewSet(ModelViewSet):
     model = ContenidoDigitalModel
     serializer_class = ContenidoDigitalSerializer
     queryset =  ContenidoDigitalModel.objects.all()
     permission_classes = [IsAuthenticated]
     http_method_names = ['get', 'post', 'patch', 'delete']
-
+    #parser_classes = [ MultiPartParser, FormParser]
     # def get_queryset(self):
     #     print(self.action)
     #     queryset = {
@@ -29,33 +29,55 @@ class ContenidoDigitalViewSet(ModelViewSet):
     def create(self, request, *args, **kwargs):
         print(self.action)
         user = self.request.user
+        mutable_data = request.data.copy()
 
-        if 'user' not in request.data:
-            request.data['user'] = user.id
+        try: 
+            if 'user' not in request.data:
+                mutable_data['user'] = user.id
 
-        if 'fecha_creacion' not in request.data:
-            request._full_data['fecha_creacion'] = datetime.now()
+            if 'fecha_creacion' not in request.data:
+                mutable_data['fecha_creacion'] = datetime.now()
 
-        return super().create(request, *args, **kwargs)
+            contenido_data = request.data
+            contenido_serializer = ContenidoDigitalSerializer(data=mutable_data)
+            if contenido_serializer.is_valid():
+                contenido = contenido_serializer.save()
+                poblacion_ids = [poblacion['id'] for poblacion in json.loads(contenido_data.get('id_poblacion'))]
+                contenido.id_poblacion.set(poblacion_ids)
+                return Response({'mensaje': 'Contenido creado exitosamente'}, status=status.HTTP_200_OK)
 
+            else:
+                #contenido.delete()
+                return Response({'mensaje': 'Error al crear el contenido'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'message': {str(e)}}, status=status.HTTP_400_BAD_REQUEST) 
+    
     def partial_update(self, request, *args, **kwargs):
         print(self.action)
         instance = self.get_object()
         user = self.request.user
         user_information = UserInformationModel.objects.get(user=user)
+        mutable_data = request.data.copy()
+        contenido_data = request.data
 
         if user_information.user_type not in ['2', '3']:
             return Response({'mensaje': 'No tiene permisos para cambiar el estado de este contenido.'}, status=status.HTTP_403_FORBIDDEN)
 
         if instance.estado == 'Pendiente' and user_information.user_type in ['2']:
             if request.data.get('estado') == 'Aprobado' and 'fecha_aprobacion' not in request.data:
-                request.data['fecha_aprobacion'] = datetime.now()
+                #request.data['fecha_aprobacion'] = datetime.now()
+                instance.fecha_creacion.set(datetime.now)
             
             return super().partial_update(request, *args, **kwargs)
                 
         elif instance.estado in ['Rechazado', 'Aprobado'] and user_information.user_type in ['2', '3']:
-            request.data['estado'] = 'Pendiente'
-            request.data['fecha_aprobacion'] = None
+            # request.data['estado'] = 'Pendiente'
+            # request.data['fecha_aprobacion'] = None
+            instance.estado.set('Pendiente')
+            instance.fecha_aprobacion.set(None)
+            poblacion_ids = [poblacion['id'] for poblacion in json.loads(mutable_data.get('id_poblacion'))]
+            instance.id_poblacion.set(poblacion_ids)
+
             return super().partial_update(request, *args, **kwargs)
             
     
