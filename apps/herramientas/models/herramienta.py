@@ -35,8 +35,8 @@ class HerramientaModel(models.Model):
     
     fecha_aprobacion = models.DateTimeField(verbose_name=_('Fecha de aprobación'), null=True)
 
-    id_poblacion = models.ForeignKey(PoblacionModel, verbose_name=_('Id población'), 
-                                  help_text=_('Id población'), null=False, on_delete=models.DO_NOTHING)
+    id_poblacion = models.ManyToManyField(PoblacionModel, verbose_name=_('Id población'), 
+                                  help_text=_('Id población'), related_name='herramientas')
     
     duracion = models.IntegerField(verbose_name=_('Duración de la herramienta'), null=False)
 

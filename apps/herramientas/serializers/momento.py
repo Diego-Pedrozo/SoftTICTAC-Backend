@@ -8,3 +8,10 @@ class MomentoSerializer(serializers.ModelSerializer):
     class Meta:
         model = MomentoModel
         fields = ['id', 'id_herramienta', 'nombre', 'descripcion', 'procesos']
+
+class MomentoUpdateSerializer(serializers.ModelSerializer):
+    #procesos = ProcesoSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = MomentoModel
+        fields = ['nombre', 'descripcion']

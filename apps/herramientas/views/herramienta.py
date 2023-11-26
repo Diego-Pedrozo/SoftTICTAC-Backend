@@ -1,10 +1,12 @@
 from rest_framework.viewsets import ModelViewSet
 from apps.herramientas.models.herramienta import HerramientaModel
-from apps.herramientas.serializers.herramienta import HerramientaSerializer
+from apps.herramientas.serializers.herramienta import HerramientaSerializer, HerramientaCreateSerializer, HerramientaUpdateSerializer
 from apps.shared.models.tema import TemaModel
-from apps.shared.serializers.tema import TemaSerializer
-from apps.herramientas.serializers.momento import MomentoSerializer
-from apps.herramientas.serializers.proceso import ProcesoSerializer
+from apps.shared.serializers.tema import TemaSerializer, TemaUpdateSerializer
+from apps.herramientas.serializers.momento import MomentoSerializer, MomentoUpdateSerializer
+from apps.herramientas.models.momento import MomentoModel
+from apps.herramientas.serializers.proceso import ProcesoSerializer, ProcesoUpdateSerializer
+from apps.herramientas.models.proceso import ProcesoModel
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
@@ -20,7 +22,16 @@ class HerramientaViewSet(ModelViewSet):
     serializer_class = HerramientaSerializer
     queryset =  HerramientaModel.objects.all()
     permission_classes = [IsAuthenticated]
-    http_method_names = ['get', 'post', 'patch', 'delete']
+    http_method_names = ['get', 'post', 'patch', 'put', 'delete']
+
+    # def get_serializer_class(self):
+    #     serializer_mapping = {
+    #         'create': HerramientaCreateSerializer,
+    #         'partial_update': HerramientaSerializer,
+    #         #'put': HerramientaUpdateSerializer,
+    #         #'update': HerramientaSerializer
+    #     }
+    #     return serializer_mapping.get(self.action, super().get_serializer_class())
 
     def create(self, request, *args, **kwargs):
         print(self.action)
@@ -41,10 +52,14 @@ class HerramientaViewSet(ModelViewSet):
                 herramienta_data['id_tema'] = tema.id
                 herramienta_data['user'] = user.id
                 herramienta_data['fecha_creacion'] = datetime.now()
-                herramienta_serializer = HerramientaSerializer(data=herramienta_data)
+                herramienta_serializer = HerramientaCreateSerializer(data=herramienta_data)
 
                 if herramienta_serializer.is_valid():
                     herramienta = herramienta_serializer.save()
+
+                    poblaciones_data = herramienta_data.get('id_poblacion', [])
+                    poblacion_ids = [poblacion['id'] for poblacion in poblaciones_data]
+                    herramienta.id_poblacion.set(poblacion_ids)
 
                     momentos_data = request.data.get('momentos', [])
                     for momento_data in momentos_data:
@@ -61,9 +76,9 @@ class HerramientaViewSet(ModelViewSet):
                                     if proceso_serializer.is_valid():
                                         proceso = proceso_serializer.save()
 
-                                        recursos_data = proceso_data.get('recursos', [])
-                                        recursos_ids = [recurso['id'] for recurso in recursos_data]
-                                        proceso.id_recurso.set(recursos_ids)
+                                        # recursos_data = proceso_data.get('recursos', [])
+                                        # recursos_ids = [recurso['id'] for recurso in recursos_data]
+                                        # proceso.id_recurso.set(recursos_ids)
                                     else:
                                         tema.delete()
                                         return Response({
@@ -133,7 +148,7 @@ class HerramientaViewSet(ModelViewSet):
                 return Response({'mensaje': 'No puede editar en este momento3'}, status=status.HTTP_200_OK)
         else:
             return Response({'mensaje': 'No puede editar en este momento4'}, status=status.HTTP_200_OK)
-            
+    
     
     def list(self, request, *args, **kwargs):
         print(self.action)

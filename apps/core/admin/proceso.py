@@ -2,6 +2,6 @@ from django.contrib import admin
 from apps.herramientas.models.proceso import ProcesoModel
 
 class ProcesoAdmin(admin.ModelAdmin):
-    list_display = ('id', 'id_momento', 'nombre', 'descripcion', 'tiempo')
+    list_display = ('id', 'id_momento', 'descripcion', 'tiempo')
 
 admin.site.register(ProcesoModel, ProcesoAdmin)
