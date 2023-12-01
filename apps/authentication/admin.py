@@ -7,8 +7,11 @@ class UserInformationInline(admin.StackedInline):
     can_delete = False
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'email', 'first_name', 'last_login', 'date_joined')
+    #list_display = ('username', 'email', 'first_name', 'last_login', 'date_joined')
+    list_display = ('username', 'first_name', 'last_name')
     inlines = [UserInformationInline]
+    search_fields = ['username', 'email', 'first_name', 'last_name']
+
 
 admin.site.unregister(User)
 
