@@ -11,6 +11,8 @@ from apps.user.models.information import UserInformationModel
 from rest_framework.response import Response
 from datetime import date, datetime
 import json
+from django.db.models import Q
+
 class ContenidoDigitalViewSet(ModelViewSet):
     model = ContenidoDigitalModel
     serializer_class = ContenidoDigitalSerializer
@@ -60,10 +62,10 @@ class ContenidoDigitalViewSet(ModelViewSet):
         mutable_data = request.data
         contenido_serializer = ContenidoDigitalSerializer(data=mutable_data)
 
-        if user_information.user_type not in ['2', '3']:
+        if user_information.user_type not in ['1', '2', '3', '4', '5', '6']:
             return Response({'mensaje': 'No tiene permisos para cambiar el estado de este contenido.'}, status=status.HTTP_403_FORBIDDEN)
 
-        if instance.estado == 'Pendiente' and user_information.user_type in ['2']:
+        if instance.estado == 'Pendiente' and user_information.user_type in ['1', '2', '3', '4', '5']:
             if request.data.get('estado') == 'Aprobado' and 'fecha_aprobacion' not in request.data:
                 instance.fecha_aprobacion = datetime.now()
                 instance.save()
@@ -73,8 +75,8 @@ class ContenidoDigitalViewSet(ModelViewSet):
             else:
                 return Response({'mensaje': 'No puede editar en este momento1'})
                 
-        elif instance.estado in ['Rechazado', 'Aprobado'] and user_information.user_type in ['2', '3']:
-            if request.data.get('estado') in ['Rechazado', 'Aprobado'] and user_information.user_type in ['2']:
+        elif instance.estado in ['Rechazado', 'Aprobado'] and user_information.user_type in ['1', '2', '3', '4', '5', '6']:
+            if request.data.get('estado') in ['Rechazado', 'Aprobado'] and user_information.user_type in ['1', '2', '3', '4', '5']:
                 # instance.estado = 'Pendiente'
                 # instance.fecha_aprobacion = None
                 # instance.save()
@@ -97,10 +99,14 @@ class ContenidoDigitalViewSet(ModelViewSet):
         estado = request.query_params.get('estado', None)
         user_information = UserInformationModel.objects.get(user=user)
          
-        if estado == 'Pendiente' and user_information.user_type in ['2']:
-            queryset = ContenidoDigitalModel.objects.filter(estado="Pendiente")
+        if estado == 'Pendiente' and user_information.user_type in ['6']:
+            queryset = ContenidoDigitalModel.objects.filter(estado="Pendiente", user=user)
+        
+        elif estado == 'Pendiente' and user_information.user_type in ['1', '2', '3', '4', '5']:
+            #queryset = ContenidoDigitalModel.objects.filter(estado="Pendiente", id_linea=user_information.user_type)
+            queryset = ContenidoDigitalModel.objects.filter(Q(estado="Pendiente") & (Q(id_linea=user_information.user_type) | Q(user=user)))
 
-        elif estado == 'Rechazado' and user_information.user_type in ['2', '3']:
+        elif estado == 'Rechazado' and user_information.user_type in ['1', '2', '3', '4', '5', '6']:
             queryset = ContenidoDigitalModel.objects.filter(estado="Rechazado", user=user)
 
         elif estado == 'Aprobado':

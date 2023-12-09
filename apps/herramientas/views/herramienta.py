@@ -16,6 +16,7 @@ from django.contrib.auth.models import User
 from apps.user.models.information import UserInformationModel
 from rest_framework.response import Response
 from datetime import date, datetime
+from django.db.models import Q
 
 class HerramientaViewSet(ModelViewSet):
     model = HerramientaModel
@@ -123,10 +124,10 @@ class HerramientaViewSet(ModelViewSet):
         mutable_data = request.data
         contenido_serializer = HerramientaSerializer(data=mutable_data)
 
-        if user_information.user_type not in ['2', '3']:
+        if user_information.user_type not in ['1', '2', '3', '4', '5', '6']:
             return Response({'mensaje': 'No tiene permisos para cambiar el estado de esta herramienta.'}, status=status.HTTP_403_FORBIDDEN)
 
-        if instance.estado == 'Pendiente' and user_information.user_type in ['2']:
+        if instance.estado == 'Pendiente' and user_information.user_type in ['1', '2', '3', '4', '5']:
             if request.data.get('estado') == 'Aprobado' and 'fecha_aprobacion' not in request.data:
                 instance.fecha_aprobacion = datetime.now()
                 instance.save()
@@ -136,8 +137,8 @@ class HerramientaViewSet(ModelViewSet):
             else:
                 return Response({'mensaje': 'No puede editar en este momento1'})
                 
-        elif instance.estado in ['Rechazado', 'Aprobado'] and user_information.user_type in ['2', '3']:
-            if request.data.get('estado') in ['Rechazado', 'Aprobado'] and user_information.user_type in ['2']:
+        elif instance.estado in ['Rechazado', 'Aprobado'] and user_information.user_type in ['1', '2', '3', '4', '5', '6']:
+            if request.data.get('estado') in ['Rechazado', 'Aprobado'] and user_information.user_type in ['1', '2', '3', '4', '5']:
                 return Response({'mensaje': 'No puede editar en este momento2'}, status=status.HTTP_200_OK)
             elif request.data.get('estado') not in ['Pendiente']:
                 instance.estado = 'Pendiente'
@@ -156,8 +157,13 @@ class HerramientaViewSet(ModelViewSet):
         estado = request.query_params.get('estado', None)
         user_information = UserInformationModel.objects.get(user=user)
          
-        if estado == 'Pendiente' and user_information.user_type in ['2']:
+        if estado == 'Pendiente' and user_information.user_type in ['6']:
             queryset = HerramientaModel.objects.filter(estado="Pendiente")
+        
+        elif estado == 'Pendiente' and user_information.user_type in ['1', '2', '3', '4', '5']:
+            queryset = HerramientaModel.objects.filter(Q(estado="Pendiente") &
+                                                       (Q(id_tema__id_linea=user_information.user_type) |
+                                                        Q(user=user)))
 
         elif estado == 'Rechazado' and user_information.user_type in ['2', '3']:
             queryset = HerramientaModel.objects.filter(estado="Rechazado", user=user)

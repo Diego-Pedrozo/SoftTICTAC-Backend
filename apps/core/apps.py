@@ -7,10 +7,10 @@ class CoreConfig(AppConfig):
     def ready(self):
         import apps.core.admin.poblacion
         import apps.core.admin.linea_transversal
-        #import apps.core.admin.tema
+        import apps.core.admin.tema
         import apps.core.admin.competencia
-        #import apps.core.admin.herramienta
+        import apps.core.admin.herramienta
         #import apps.core.admin.momento
         #import apps.core.admin.recurso
         #import apps.core.admin.proceso
-        #import apps.core.admin.contenido
+        import apps.core.admin.contenido

@@ -26,7 +26,7 @@ def create_default_users(sender, **kwargs):
             admin_information = {
                 'user': admin_user,
                 'identification': 'admin_id',
-                'user_type': 1
+                'user_type': 0
             }
 
             # information_db.create(**admin_information)
@@ -48,7 +48,7 @@ def create_default_users(sender, **kwargs):
             'password': '1234',
             'information': {
                 "identification": "1151898",
-                "user_type": 2
+                "user_type": 6
             }
         },
         {
@@ -57,7 +57,7 @@ def create_default_users(sender, **kwargs):
             'password': '1234',
             'information': {
                 "identification": "1151891",
-                "user_type": 3
+                "user_type": 6
             }
         }
     ]
