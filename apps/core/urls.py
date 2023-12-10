@@ -14,5 +14,6 @@ urlpatterns = [
     path('contenidos/', include('apps.condigitales.urls')),
     path('herramientas/', include('apps.herramientas.urls')),
     path('shared/', include('apps.shared.urls')),
+    path('proyectoaula/', include('apps.proyectoaula.urls')),
     path('', include(router.urls))   
 ]

@@ -14,3 +14,4 @@ class CoreConfig(AppConfig):
         #import apps.core.admin.recurso
         #import apps.core.admin.proceso
         import apps.core.admin.contenido
+        import apps.core.admin.proyectoaula
