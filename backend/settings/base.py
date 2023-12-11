@@ -52,7 +52,8 @@ INSTALLED_APPS = [
     'apps.condigitales',
     'apps.herramientas',
     'apps.shared',
-    'apps.proyectoaula'
+    'apps.proyectoaula',
+    'apps.plantrabajo'
 ]
 
 MIDDLEWARE = [

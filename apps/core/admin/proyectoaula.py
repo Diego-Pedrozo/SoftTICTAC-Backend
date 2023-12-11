@@ -1,9 +1,9 @@
 from django.contrib import admin
 from apps.proyectoaula.models.proyectoaula import ProyectoAulaModel
-from apps.proyectoaula.models.actividad import ActividadModel
+from apps.proyectoaula.models.actividad_proyecto import ActividadProyectoModel
 
 class ActividadInline(admin.StackedInline):
-    model = ActividadModel  
+    model = ActividadProyectoModel  
     extra = 0
 
 class ProyectoAulaAdmin(admin.ModelAdmin):

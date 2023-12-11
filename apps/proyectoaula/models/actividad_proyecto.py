@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.translation import gettext as _
 from apps.proyectoaula.models.proyectoaula import ProyectoAulaModel
 
-class ActividadModel(models.Model):
+class ActividadProyectoModel(models.Model):
         
     id_proyectoaula = models.ForeignKey(ProyectoAulaModel, verbose_name=_('Id proyecto aula'),
                               help_text=_('Id proyecto aula'), null=False, on_delete=models.CASCADE,

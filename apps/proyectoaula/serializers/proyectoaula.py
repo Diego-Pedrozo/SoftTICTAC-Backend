@@ -1,10 +1,10 @@
 from apps.proyectoaula.models.proyectoaula import ProyectoAulaModel
-from apps.proyectoaula.serializers.actividad import ActividadSerializer
+from apps.proyectoaula.serializers.actividad_proyecto import ActividadProyectoSerializer
 from rest_framework import serializers
 
 
 class ProyectoAulaSerializer(serializers.ModelSerializer):
-    actividades = ActividadSerializer(many=True, read_only=True)
+    actividades = ActividadProyectoSerializer(many=True, read_only=True)
     
     class Meta:
         model = ProyectoAulaModel

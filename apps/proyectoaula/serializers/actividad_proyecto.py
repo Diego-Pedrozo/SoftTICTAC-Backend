@@ -1,17 +1,17 @@
-from apps.proyectoaula.models.actividad import ActividadModel
+from apps.proyectoaula.models.actividad_proyecto import ActividadProyectoModel
 from rest_framework import serializers
 
-class ActividadSerializer(serializers.ModelSerializer):
+class ActividadProyectoSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model = ActividadModel
+        model = ActividadProyectoModel
         fields = ['id', 'id_proyectoaula', 'nombre', 'descripcion', 'estudiantes',
                   'cumplimiento', 'observaciones', 'fecha_inicio', 'fecha_fin']
         
-class ActividadUpdateSerializer(serializers.ModelSerializer):
+class ActividadProyectoUpdateSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model = ActividadModel
+        model = ActividadProyectoModel
         fields = ['nombre', 'descripcion', 'estudiantes',
                   'cumplimiento', 'observaciones', 'fecha_fin']
         

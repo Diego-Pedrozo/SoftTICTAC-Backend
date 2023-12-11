@@ -1,8 +1,8 @@
 from rest_framework.viewsets import ModelViewSet
 from apps.proyectoaula.models.proyectoaula import ProyectoAulaModel
 from apps.proyectoaula.serializers.proyectoaula import ProyectoAulaSerializer, ProyectoAulaUpdateSerializer
-from apps.proyectoaula.models.actividad import ActividadModel
-from apps.proyectoaula.serializers.actividad import ActividadSerializer, ActividadUpdateSerializer
+from apps.proyectoaula.models.actividad_proyecto import ActividadProyectoModel
+from apps.proyectoaula.serializers.actividad_proyecto import ActividadProyectoSerializer, ActividadProyectoUpdateSerializer
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
@@ -37,7 +37,7 @@ class ProyectoAulaViewSet(ModelViewSet):
                 actividades_data = request.data.get('actividades', [])
                 for actividad_data in actividades_data:
                         actividad_data['id_proyectoaula'] = proyecto.id
-                        actividad_serializer = ActividadSerializer(data=actividad_data)
+                        actividad_serializer = ActividadProyectoSerializer(data=actividad_data)
                         if actividad_serializer.is_valid():
                             #print('actividad valida')
                             actividad = actividad_serializer.save()
@@ -93,10 +93,10 @@ class ProyectoAulaViewSet(ModelViewSet):
                     actividad_data['fecha_fin'] = None
                     actividad_data['observaciones'] = None
                     
-                actividad_serializer = ActividadUpdateSerializer(data=actividad_data)
+                actividad_serializer = ActividadProyectoUpdateSerializer(data=actividad_data)
                 if actividad_serializer.is_valid():
-                    actividad_instance = ActividadModel.objects.get(id_proyectoaula=proyecto_instance, id=actividad_data['id'])
-                    actividad = ActividadSerializer(instance=actividad_instance, data=actividad_data, partial=True)       
+                    actividad_instance = ActividadProyectoModel.objects.get(id_proyectoaula=proyecto_instance, id=actividad_data['id'])
+                    actividad = ActividadProyectoSerializer(instance=actividad_instance, data=actividad_data, partial=True)       
                     if actividad.is_valid():
                         actividad.save()
             
