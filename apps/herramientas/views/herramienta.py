@@ -158,14 +158,14 @@ class HerramientaViewSet(ModelViewSet):
         user_information = UserInformationModel.objects.get(user=user)
          
         if estado == 'Pendiente' and user_information.user_type in ['6']:
-            queryset = HerramientaModel.objects.filter(estado="Pendiente")
+            queryset = HerramientaModel.objects.filter(estado="Pendiente", user=user)
         
         elif estado == 'Pendiente' and user_information.user_type in ['1', '2', '3', '4', '5']:
             queryset = HerramientaModel.objects.filter(Q(estado="Pendiente") &
                                                        (Q(id_tema__id_linea=user_information.user_type) |
                                                         Q(user=user)))
 
-        elif estado == 'Rechazado' and user_information.user_type in ['2', '3']:
+        elif estado == 'Rechazado' and user_information.user_type in ['1', '2', '3', '4', '5', '6']:
             queryset = HerramientaModel.objects.filter(estado="Rechazado", user=user)
 
         elif estado == 'Aprobado':
