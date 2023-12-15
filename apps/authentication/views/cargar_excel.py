@@ -25,7 +25,7 @@ class RegisterExcelViewSet(ModelViewSet):
         serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
-            print(f'🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈{'Entro al if'}🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈')
+            #print(f'🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈{'Entro al if'}🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈')
             excel_file = request.data['file']
             excel_content = excel_file.read()
             df = pd.read_excel(excel_content, engine='openpyxl')
@@ -35,7 +35,7 @@ class RegisterExcelViewSet(ModelViewSet):
             #serializer.save()
             return Response({'message': 'Usuarios registrados exitosamente'}, status=status.HTTP_201_CREATED)
         else:
-            print(f'🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈{'No entro al if'}🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈')
+            #print(f'🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈{'No entro al if'}🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈')
             return Response({'mensaje': 'Mal', 'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
     
     def create_users_from_excel(self, df):
@@ -59,17 +59,17 @@ class RegisterExcelViewSet(ModelViewSet):
                 'last_name': row['last_name'],
                 'information': {
                     'identification': str(row['identification']),
-                    'user_type': "3"
+                    'user_type': "6"
                 }
             }
             
             email = user_data['email']
-            print('🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈')
-            print(email)
+            #print('🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈')
+            #print(email)
             information = user_data.pop('information', None)
-            print(user_data)
-            print(information)
-            print('🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈')
+            #print(user_data)
+            #print(information)
+            #print('🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈')
 
             user_instance, created = User.objects.get_or_create(username=email, defaults=user_data)
             user_information, info_created = UserInformationModel.objects.get_or_create(user=user_instance, defaults=information)
