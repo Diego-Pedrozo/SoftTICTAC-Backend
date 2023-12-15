@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.contrib.auth.models import User
 from apps.user.models.information import UserInformationModel
+from apps.estadisticas.models.stats import UserStatsModel
 from rest_framework.response import Response
 from datetime import date, datetime
 import json
@@ -69,6 +70,25 @@ class ContenidoDigitalViewSet(ModelViewSet):
             if request.data.get('estado') == 'Aprobado' and 'fecha_aprobacion' not in request.data:
                 instance.fecha_aprobacion = datetime.now()
                 instance.save()
+                #aumenta stats de contenido del usuario creador
+                user_contenido = instance.user
+                user_stats = UserStatsModel.objects.get(user=user_contenido)
+                id_linea = instance.id_linea.id
+                if id_linea == 1:
+                    user_stats.contenidos_emprendimiento = user_stats.contenidos_emprendimiento+1
+                    user_stats.save()
+                elif id_linea == 2:
+                    user_stats.contenidos_sexualidad = user_stats.contenidos_sexualidad+1
+                    user_stats.save()
+                elif id_linea == 3:
+                    user_stats.contenidos_relaciones_sociales = user_stats.contenidos_relaciones_sociales+1
+                    user_stats.save()
+                elif id_linea == 4:
+                    user_stats.contenidos_medio_ambiente = user_stats.contenidos_medio_ambiente+1
+                    user_stats.save()
+                elif id_linea == 5:
+                    user_stats.contenidos_tics = user_stats.contenidos_tics+1
+                    user_stats.save()
                 return super().partial_update(request, *args, **kwargs)
             elif request.data.get('estado') == 'Rechazado':
                 return super().partial_update(request, *args, **kwargs)

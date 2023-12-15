@@ -1,4 +1,5 @@
 from rest_framework.viewsets import ModelViewSet
+from apps.estadisticas.models.stats import UserStatsModel
 from apps.proyectoaula.models.proyectoaula import ProyectoAulaModel
 from apps.proyectoaula.serializers.proyectoaula import ProyectoAulaSerializer, ProyectoAulaUpdateSerializer
 from apps.proyectoaula.models.actividad_proyecto import ActividadProyectoModel
@@ -47,7 +48,25 @@ class ProyectoAulaViewSet(ModelViewSet):
                             'status': 'Error',
                             'message': f'Error al crear actividad: {actividad_serializer.errors}'
                             }, status=status.HTTP_400_BAD_REQUEST)
-
+                #aumenta stats de proyectos del usuario creador
+                user_proyecto = user
+                user_stats = UserStatsModel.objects.get(user=user_proyecto)
+                id_linea = proyecto_data['id_linea']
+                if id_linea == 1:
+                    user_stats.proyectos_emprendimiento = user_stats.proyectos_emprendimiento+1
+                    user_stats.save()
+                elif id_linea == 2:
+                    user_stats.proyectos_sexualidad = user_stats.proyectos_sexualidad+1
+                    user_stats.save()
+                elif id_linea == 3:
+                    user_stats.proyectos_relaciones_sociales = user_stats.proyectos_relaciones_sociales+1
+                    user_stats.save()
+                elif id_linea == 4:
+                    user_stats.proyectos_medio_ambiente = user_stats.proyectos_medio_ambiente+1
+                    user_stats.save()
+                elif id_linea == 5:
+                    user_stats.proyectos_tics = user_stats.proyectos_tics+1
+                    user_stats.save()
                 return Response({
                             'status': 'OK',
                             'message': 'Proyecto de aula creado exitosamente.',

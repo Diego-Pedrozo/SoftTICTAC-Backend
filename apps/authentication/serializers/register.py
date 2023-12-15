@@ -3,6 +3,7 @@ from apps.user.serializers.user import UserSerializer
 from apps.user.models.information import UserInformationModel
 from apps.user.serializers.information import InformationUserSerializer
 from rest_framework import serializers
+from apps.estadisticas.models.stats import UserStatsModel#
 
 class RegisterUserSerializer(UserSerializer):
     email = serializers.EmailField(required=True)
@@ -16,6 +17,7 @@ class RegisterUserSerializer(UserSerializer):
         information = validated_data.pop('information')
         user_instance, created = User.objects.get_or_create(username=email, defaults=validated_data)
         user_information, info_created = UserInformationModel.objects.get_or_create(user=user_instance, defaults=information)
+        user_stats = UserStatsModel.objects.get_or_create(user=user_instance)#
 
         if not info_created:
             for key, value in information.items():

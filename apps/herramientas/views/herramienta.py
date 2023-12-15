@@ -14,6 +14,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.contrib.auth.models import User
 from apps.user.models.information import UserInformationModel
+from apps.estadisticas.models.stats import UserStatsModel
 from rest_framework.response import Response
 from datetime import date, datetime
 from django.db.models import Q
@@ -131,6 +132,26 @@ class HerramientaViewSet(ModelViewSet):
             if request.data.get('estado') == 'Aprobado' and 'fecha_aprobacion' not in request.data:
                 instance.fecha_aprobacion = datetime.now()
                 instance.save()
+                #aumenta stats de herramienta del usuario creador
+                user_herramienta = instance.user
+                user_stats = UserStatsModel.objects.get(user=user_herramienta)
+                tema_herramienta = TemaModel.objects.get(id=instance.id_tema.id)
+                id_linea = tema_herramienta.id_linea.id
+                if id_linea == 1:
+                    user_stats.herramientas_emprendimiento = user_stats.herramientas_emprendimiento+1
+                    user_stats.save()
+                elif id_linea == 2:
+                    user_stats.herramientas_sexualidad = user_stats.herramientas_sexualidad+1
+                    user_stats.save()
+                elif id_linea == 3:
+                    user_stats.herramientas_relaciones_sociales = user_stats.herramientas_relaciones_sociales+1
+                    user_stats.save()
+                elif id_linea == 4:
+                    user_stats.herramientas_medio_ambiente = user_stats.herramientas_medio_ambiente+1
+                    user_stats.save()
+                elif id_linea == 5:
+                    user_stats.herramientas_tics = user_stats.herramientas_tics+1
+                    user_stats.save()
                 return super().partial_update(request, *args, **kwargs)
             elif request.data.get('estado') == 'Rechazado':
                 return super().partial_update(request, *args, **kwargs)

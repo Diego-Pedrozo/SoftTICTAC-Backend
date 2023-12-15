@@ -16,5 +16,6 @@ urlpatterns = [
     path('shared/', include('apps.shared.urls')),
     path('proyectoaula/', include('apps.proyectoaula.urls')),
     path('plantrabajo/', include('apps.plantrabajo.urls')),
+    path('estadisticas/', include('apps.estadisticas.urls')),
     path('', include(router.urls))   
 ]

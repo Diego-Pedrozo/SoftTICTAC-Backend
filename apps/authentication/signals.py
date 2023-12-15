@@ -4,6 +4,7 @@ from django.db.models.signals import post_save, post_migrate
 from django.dispatch import receiver
 from django.contrib.auth.hashers import make_password
 from apps.user.models.information import UserInformationModel
+from apps.estadisticas.models.stats import UserStatsModel
 
 @receiver(post_save, sender=User)
 def _post_save_user(sender, instance, **kwargs):
@@ -17,6 +18,7 @@ def _post_save_user(sender, instance, **kwargs):
 def create_default_users(sender, **kwargs):
     users_db = User.objects
     information_db = UserInformationModel.objects
+    stats_db = UserStatsModel.objects
 
     try:
         # Crea el usuario administrador predeterminado
@@ -69,7 +71,7 @@ def create_default_users(sender, **kwargs):
         password = user_data['password']
         
         user_instance, created = users_db.get_or_create(username=username, email=email, defaults={'password': password})
-        
+        stats_instance = stats_db.get_or_create(user=user_instance)
         existing_information = UserInformationModel.objects.filter(user=user_instance).first()
         
         #print(f'🎈🎈🎈🎈🎈🎈🎈🎈🎈{existing_information}')
