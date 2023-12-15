@@ -11,3 +11,8 @@ class InformationUserCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserInformationModel
         fields = ['identification', 'user_type', 'user']
+
+class InformationUserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserInformationModel
+        fields = ['user_type']

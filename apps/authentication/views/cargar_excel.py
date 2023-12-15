@@ -9,6 +9,7 @@ from rest_framework.parsers import FileUploadParser
 from rest_framework import status
 from django.contrib.auth.models import User
 from apps.user.models.information import UserInformationModel
+from apps.estadisticas.models.stats import UserStatsModel
 import pandas as pd
 
 #Registro
@@ -72,6 +73,7 @@ class RegisterExcelViewSet(ModelViewSet):
 
             user_instance, created = User.objects.get_or_create(username=email, defaults=user_data)
             user_information, info_created = UserInformationModel.objects.get_or_create(user=user_instance, defaults=information)
+            stats_instance = UserStatsModel.objects.get_or_create(user=user_instance)
 
             if not info_created:
                 for key, value in information.items():
